@@ -27,9 +27,8 @@ typedef struct
     int initialized;
 } DigitalBiquadFilter;
 
-int apply(const int sample, DigitalBiquadFilter *Filter);
-void reset(int value, DigitalBiquadFilter *Filter);
-void compute_params(float sample_freq, float cutoff_freq, biquad_params *ret);
-void LowPassFilterinit(DigitalBiquadFilter *Filter, float sample_freq,float cutoff_freq);
+int LPF2p_apply(const int sample, DigitalBiquadFilter *Filter);
+void LPF2p_reset(int value, DigitalBiquadFilter *Filter);
+void LPF2p_init(DigitalBiquadFilter *Filter, float sample_freq, float cutoff_freq);
 
 #endif //__LOWPASSFILTER_H

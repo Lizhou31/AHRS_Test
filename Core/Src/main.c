@@ -96,11 +96,15 @@ int main(void)
   gy85_compass_init();
   gy85_accel_init();
   uint8_t rawdata[12];
-  int16_t testdata[3];
-  DigitalBiquadFilter Filter1, Filter2, Filter3;
-  LowPassFilterinit(&Filter1, 50, 10);
-  LowPassFilterinit(&Filter2, 50, 10);
-  LowPassFilterinit(&Filter3, 50, 10);
+  int16_t tempdata[3];
+  int _temp_filter;
+  DigitalBiquadFilter Filter1, Filter2, Filter3, Filter4, Filter5, Filter6;
+  LPF2p_init(&Filter1, 380, 10);
+  LPF2p_init(&Filter2, 380, 10);
+  LPF2p_init(&Filter3, 380, 10);
+  LPF2p_init(&Filter4, 115, 10);
+  LPF2p_init(&Filter5, 115, 10);
+  LPF2p_init(&Filter6, 115, 10);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -109,22 +113,36 @@ int main(void)
   {
     /* USER CODE END WHILE */
     HAL_Delay(20);
-    gy85_compass_fetch(rawdata);
-    testdata[0] = ((int16_t)rawdata[0] << 8) + ((int16_t)rawdata[1]);
-    testdata[0] = apply(testdata[0], &Filter1);
-    testdata[1] = ((int16_t)rawdata[2] << 8) + ((int16_t)rawdata[3]);
-    testdata[1] = apply(testdata[1], &Filter2);
-    testdata[2] = ((int16_t)rawdata[4] << 8) + ((int16_t)rawdata[5]);
-    testdata[2] = apply(testdata[2], &Filter3);
+    gy85_compass_getData(tempdata);
+    _temp_filter = tempdata[0];
+    tempdata[0] = LPF2p_apply(_temp_filter, &Filter1);
+    _temp_filter = tempdata[1];
+    tempdata[1] = LPF2p_apply(tempdata[1], &Filter2);
+    _temp_filter = tempdata[2];
+    tempdata[2] = LPF2p_apply(tempdata[2], &Filter3);
 
-    rawdata[0] = testdata[0] >> 8;
-    rawdata[1] = testdata[0];
-    rawdata[2] = testdata[1] >> 8;
-    rawdata[3] = testdata[1];
-    rawdata[4] = testdata[2] >> 8;
-    rawdata[5] = testdata[2];
+    rawdata[0] = tempdata[0] >> 8;
+    rawdata[1] = tempdata[0];
+    rawdata[2] = tempdata[1] >> 8;
+    rawdata[3] = tempdata[1];
+    rawdata[4] = tempdata[2] >> 8;
+    rawdata[5] = tempdata[2];
 
-    gy85_accel_fetch(rawdata + 6);
+    gy85_accel_getData(tempdata);
+    _temp_filter = tempdata[0];
+    tempdata[0] = LPF2p_apply(tempdata[0], &Filter4);
+    _temp_filter = tempdata[1];
+    tempdata[1] = LPF2p_apply(tempdata[1], &Filter5);
+    _temp_filter = tempdata[2];
+    tempdata[2] = LPF2p_apply(tempdata[2], &Filter6);
+
+    rawdata[6] = tempdata[0] >> 8;
+    rawdata[7] = tempdata[0];
+    rawdata[8] = tempdata[1] >> 8;
+    rawdata[9] = tempdata[1];
+    rawdata[10] = tempdata[2] >> 8;
+    rawdata[11] = tempdata[2];
+
     HAL_UART_Transmit(&huart1, rawdata, ARR_SIZE(rawdata), 0xff);
     /* USER CODE BEGIN 3 */
   }

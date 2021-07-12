@@ -2,6 +2,7 @@
 #define __GY85_H
 
 #include "support.h"
+
 #define GY85_ACCEL_I2CADDR 0x53   /*!< ADXL345 - Three axis accelerometer */
 #define GY85_COMPASS_I2CADDR 0x1E /*!< HMC5883L — Three axis magnetometer */
 #define GY85_GYRO_I2CADDR 0x68    /*!< ITG3205 — Three axis gyroscope */
@@ -72,7 +73,10 @@ enum
 };
 
 void gy85_compass_init(void);
-void gy85_compass_fetch(uint8_t *data);
+void gy85_compass_getRaw(uint8_t *data);
+void gy85_compass_getData(int16_t *data);
 void gy85_accel_init(void);
-void gy85_accel_fetch(uint8_t *data);
+void gy85_accel_getRaw(uint8_t *data);
+void gy85_accel_getData(int16_t *data);
+
 #endif //__GY85_H

@@ -10,7 +10,7 @@ void gy85_compass_init(void)
     GY85_HAL_WRITE_MEM8(&data, GY85_COMPASS_I2CADDR << 1, GY85_COMPASS_MODEADDR, 1U);
 }
 
-void gy85_compass_fetch(uint8_t *data)
+static void gy85_compass_fetch(uint8_t *data)
 {
     GY85_HAL_READ_MEM8(data, GY85_COMPASS_I2CADDR << 1, GY85_COMPASS_DATA_XMSB, 1U);
     GY85_HAL_READ_MEM8(data + 1, GY85_COMPASS_I2CADDR << 1, GY85_COMPASS_DATA_XLSB, 1U);
@@ -22,13 +22,27 @@ void gy85_compass_fetch(uint8_t *data)
     GY85_HAL_READ_MEM8(data + 5, GY85_COMPASS_I2CADDR << 1, GY85_COMPASS_DATA_ZLSB, 1U);
 }
 
+void gy85_compass_getRaw(uint8_t *data)
+{
+    gy85_compass_fetch(data);
+}
+
+void gy85_compass_getData(int16_t *data)
+{
+    uint8_t rdata[6];
+    gy85_compass_fetch(rdata);
+    data[0] = ((int16_t)rdata[0] << 8) + (int16_t)rdata[1];
+    data[1] = ((int16_t)rdata[2] << 8) + (int16_t)rdata[3];
+    data[2] = ((int16_t)rdata[3] << 8) + (int16_t)rdata[5];
+}
+
 void gy85_accel_init(void)
 {
     uint8_t data = 0x08; // temp test
     GY85_HAL_WRITE_MEM8(&data, GY85_ACCEL_I2CADDR << 1, GY85_ACCEL_PWRADDR, 1U);
 }
 
-void gy85_accel_fetch(uint8_t *data)
+static void gy85_accel_fetch(uint8_t *data)
 {
     GY85_HAL_READ_MEM8(data, GY85_ACCEL_I2CADDR << 1, GY85_ACCEL_DATA_X1, 1U);
     GY85_HAL_READ_MEM8(data + 1, GY85_ACCEL_I2CADDR << 1, GY85_ACCEL_DATA_X0, 1U);
@@ -38,4 +52,18 @@ void gy85_accel_fetch(uint8_t *data)
 
     GY85_HAL_READ_MEM8(data + 4, GY85_ACCEL_I2CADDR << 1, GY85_ACCEL_DATA_Z1, 1U);
     GY85_HAL_READ_MEM8(data + 5, GY85_ACCEL_I2CADDR << 1, GY85_ACCEL_DATA_Z0, 1U);
+}
+
+void gy85_accel_getRaw(uint8_t *data)
+{
+    gy85_accel_fetch(data);
+}
+
+void gy85_accel_getData(int16_t *data)
+{
+    uint8_t rdata[6];
+    gy85_accel_fetch(rdata);
+    data[0] = ((int16_t)rdata[0] << 8) + (int16_t)rdata[1];
+    data[1] = ((int16_t)rdata[2] << 8) + (int16_t)rdata[3];
+    data[2] = ((int16_t)rdata[3] << 8) + (int16_t)rdata[5];
 }
