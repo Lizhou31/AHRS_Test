@@ -117,9 +117,9 @@ int main(void)
     _temp_filter = tempdata[0];
     tempdata[0] = LPF2p_apply(_temp_filter, &Filter1);
     _temp_filter = tempdata[1];
-    tempdata[1] = LPF2p_apply(tempdata[1], &Filter2);
+    tempdata[1] = LPF2p_apply(_temp_filter, &Filter2);
     _temp_filter = tempdata[2];
-    tempdata[2] = LPF2p_apply(tempdata[2], &Filter3);
+    tempdata[2] = LPF2p_apply(_temp_filter, &Filter3);
 
     rawdata[0] = tempdata[0] >> 8;
     rawdata[1] = tempdata[0];
@@ -130,11 +130,11 @@ int main(void)
 
     gy85_accel_getData(tempdata);
     _temp_filter = tempdata[0];
-    tempdata[0] = LPF2p_apply(tempdata[0], &Filter4);
+    tempdata[0] = LPF2p_apply(_temp_filter, &Filter4);
     _temp_filter = tempdata[1];
-    tempdata[1] = LPF2p_apply(tempdata[1], &Filter5);
+    tempdata[1] = LPF2p_apply(_temp_filter, &Filter5);
     _temp_filter = tempdata[2];
-    tempdata[2] = LPF2p_apply(tempdata[2], &Filter6);
+    tempdata[2] = LPF2p_apply(_temp_filter, &Filter6);
 
     rawdata[6] = tempdata[0] >> 8;
     rawdata[7] = tempdata[0];
@@ -143,7 +143,7 @@ int main(void)
     rawdata[10] = tempdata[2] >> 8;
     rawdata[11] = tempdata[2];
 
-    HAL_UART_Transmit(&huart1, rawdata, ARR_SIZE(rawdata), 0xff);
+    HAL_UART_Transmit(&huart1, rawdata, ARR_SIZE(rawdata), 0x0f);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
