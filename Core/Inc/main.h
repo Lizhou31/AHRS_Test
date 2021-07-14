@@ -32,7 +32,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "gy85.h"
 #include "LowPassFilter2p.h"
 /* USER CODE END Includes */
 
@@ -59,6 +58,13 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define NRF_CE_Pin GPIO_PIN_1
+#define NRF_CE_GPIO_Port GPIOA
+#define NRF_CSN_Pin GPIO_PIN_2
+#define NRF_CSN_GPIO_Port GPIOA
+#define NRF_IRQ_Pin GPIO_PIN_0
+#define NRF_IRQ_GPIO_Port GPIOB
+#define NRF_IRQ_EXTI_IRQn EXTI0_IRQn
 #define GY85_SCL_Pin GPIO_PIN_6
 #define GY85_SCL_GPIO_Port GPIOB
 #define GY85_SDA_Pin GPIO_PIN_7
